@@ -14,6 +14,8 @@ decmNum: .asciiz "Ingresa el número decimal: "
 octNum: .asciiz "Ingresa el número octal: "
 hxdNum: .asciiz "Ingresa el número hexadecimal: "
 
+ansB: .asciiz "El número en binario es: "
+
 .text
 	
 #Print welcome message
@@ -58,6 +60,8 @@ decm:	li $v0 4
 	syscall
 	li $v0 5
 	syscall
+	move $s1 $v0 #$s1 tiene el valor decimal que ingresó el usuario
+	j dTb
 #Octal input
 oct:	li $v0 4
 	la $a0 octNum
@@ -74,6 +78,22 @@ hxd:	li $v0 4
 #Exit the program
 exit:	li $v0 10
 	syscall
+	
+##DECIMAL TO BINARY##
+dTb:	li $v0 4
+	la $a0 ansB
+	syscall
+	li $t2 31
+dcTbn:	bltz $t2 exit
+	move $t1 $s1 #Copia del número original
+	srlv $t1 $t1 $t2
+	and $t1 $t1 1
+	#Print the bit
+	li $v0 1
+	move $a0 $t1
+	syscall
+	addi $t2 $t2 -1
+	j dcTbn
 	
 
 
